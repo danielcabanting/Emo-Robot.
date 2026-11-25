@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#03070d"><title>EMO Face</title>
+<style>
+:root{--cyan:#45f3ff;--bg:#03070d;--panel:#07131f;--line:#174052}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:#e8fcff;font-family:system-ui,Arial,sans-serif}
+body{background:radial-gradient(ellipse at 50% 46%,#102c3d 0,#06121e 42%,#02050a 85%)}
+.stage{height:100dvh;width:100vw;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:clamp(10px,2.5vw,24px);position:relative}
+.top{width:100%;display:flex;justify-content:space-between;align-items:center;z-index:2}
+.brand{font-weight:800;letter-spacing:4px;font-size:clamp(13px,2vw,19px);color:#d9fbff}.online{font-size:clamp(9px,1.4vw,12px);letter-spacing:1.5px;color:#69d9e8}
+button{font:inherit;color:#c8faff;background:#0a1c29;border:1px solid #1a5368;border-radius:50px;padding:9px 14px}
+.settings{font-size:17px;padding:7px 12px}
+.face-zone{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0;position:relative}
+.face{width:min(74vw,760px);height:min(48vh,330px);min-height:130px;border:clamp(7px,1.4vw,13px) solid #d6e5ed;border-radius:clamp(35px,8vw,85px);background:linear-gradient(145deg,#07131f,#01050a 75%);box-shadow:inset 0 0 45px #00cde522,0 0 24px #40eaff22,0 0 80px #13cde51c;display:flex;align-items:center;justify-content:center;gap:clamp(35px,9vw,110px);position:relative}
+.face:before{content:"";position:absolute;inset:8px;border-radius:inherit;border:1px solid #24566a55;pointer-events:none}
+.eye{width:clamp(45px,12vw,130px);height:clamp(55px,17vh,145px);border-radius:30% 30% 35% 35%;background:linear-gradient(180deg,#8effff,#21ddeb 55%,#11aeca);box-shadow:0 0 18px #32efff,0 0 55px #18dfffa8;transition:all .25s;animation:blink 6s infinite}
+@keyframes blink{0%,46%,49%,100%{transform:scaleY(1)}47.5%{transform:scaleY(.08)}}
+.face.happy .eye{height:clamp(36px,11vh,95px);border-radius:50% 50% 18% 18%;transform:translateY(9px)}
+.face.sad .eye{height:clamp(45px,13vh,115px);border-radius:40% 40% 20% 20%;transform:rotate(8deg)}
+.face.thinking .eye{height:clamp(13px,3vh,26px);border-radius:30px}
+.face.listening .eye{animation:pulse 1s infinite alternate}
+@keyframes pulse{to{filter:brightness(1.45);box-shadow:0 0 30px #5fffff,0 0 80px #18dfff}}
+.mouth{position:absolute;bottom:17%;left:50%;transform:translateX(-50%);width:clamp(25px,5vw,52px);height:5px;border-radius:20px;background:#35ddeb;opacity:0;box-shadow:0 0 12px #29eaff}
+.face.talking .mouth{opacity:1;animation:talk .18s infinite alternate}
+@keyframes talk{from{height:4px;width:clamp(22px,4vw,40px)}to{height:clamp(13px,3vh,25px);width:clamp(32px,6vw,65px);border-radius:45%}
+}
+.speech{width:min(900px,94vw);min-height:48px;max-height:20vh;overflow:auto;text-align:center;display:flex;align-items:center;justify-content:center;padding:8px 15px;color:#c6faff;font-size:clamp(14px,2.2vw,22px);font-weight:600;text-shadow:0 0 15px #22dffb55}
+.bottom{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;z-index:2}
+.mic{width:clamp(54px,8vw,72px);height:clamp(54px,8vw,72px);border-radius:50%;font-size:23px;border:2px solid var(--cyan);background:#07313d;box-shadow:0 0 22px #18dff755}
+.mic.active{background:#126274;box-shadow:0 0 35px #29edff}
+.small{font-size:12px}.hint{position:absolute;bottom:clamp(80px,12vh,110px);font-size:10px;color:#5d8292;letter-spacing:1px}
+.overlay{position:fixed;inset:0;background:#000d;display:none;align-items:center;justify-content:center;padding:14px;z-index:5}.overlay.show{display:flex}
+.sheet{width:min(520px,96vw);max-height:90dvh;overflow:auto;background:#081724;border:1px solid #24546b;border-radius:20px;padding:18px}
+.sheet h2{margin:0 0 12px}.field{display:grid;gap:6px;margin:10px 0}.field label{font-size:12px;color:#9fc4d0}
+input,select{width:100%;padding:11px;border-radius:11px;background:#04101a;color:#eaffff;border:1px solid #225064}
+.save{width:100%;background:#36e4f2;color:#00151b;border:0;border-radius:12px;padding:12px;font-weight:800}
+.note{font-size:10px;color:#87a6b5;line-height:1.45}
+@media(orientation:portrait){.stage:after{content:"I-rotate ang cellphone para sa landscape view ↻";position:fixed;inset:0;background:#03070d;z-index:4;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;color:#a9f8ff;font-size:18px;font-weight:700;letter-spacing:1px}}
+@media(orientation:landscape) and (max-height:430px){.stage{padding:7px 15px}.face{height:54vh}.speech{min-height:34px}.hint{bottom:65px}.mic{width:48px;height:48px}}
+</style></head>
+<body><main class="stage">
+<header class="top"><div><div class="brand">EMO</div><div class="online" id="status">● READY</div></div><button class="settings" id="open">⚙</button></header>
+<section class="face-zone"><div class="face" id="face"><div class="eye"></div><div class="eye"></div><div class="mouth"></div></div></section>
+<div class="speech" id="speech">Hello! I'm EMO. I'm listening. ✨</div>
+<div class="hint">TURN YOUR PHONE SIDEWAYS · EMO AI COMPANION</div>
+<footer class="bottom"><button class="mic" id="mic" aria-label="Talk">🎙</button><button id="testVoice" class="small">🔊 Test voice</button><button id="stop" class="small">Stop voice</button></footer>
+</main>
+<div class="overlay" id="overlay"><section class="sheet"><button id="close" style="float:right">✕</button><h2>EMO Settings</h2>
+<div class="field"><label>AI API endpoint (OpenAI-compatible)</label><input id="endpoint" placeholder="https://api.openai.com/v1/chat/completions"></div>
+<div class="field"><label>Model</label><input id="model" placeholder="gpt-4o-mini"></div>
+<div class="field"><label>API key</label><input id="key" type="password" placeholder="Your API key"></div>
+<div class="field"><label>Voice language</label><select id="lang"><option value="fil-PH">Filipino</option><option value="en-US">English US</option><option value="en-GB">English UK</option></select></div>
+<div class="field"><label>Voice style</label><select id="style"><option value="warm">Warm</option><option value="cheerful">Cheerful</option><option value="calm">Calm</option><option value="dramatic">Expressive</option></select></div>
+<div class="field"><label>Voice speed</label><input id="rate" type="range" min=".75" max="1.25" step=".05" value="1"></div>
+<button class="save" id="save">Save settings</button>
+<p class="note">AI answers require internet and an API key. This demo stores the key locally on this device; do not distribute an app with a private API key embedded. For a public release, connect a secure backend. Voice input/output availability depends on Android/browser speech services.</p>
+</section></div>
+<script>
+const $=x=>document.getElementById(x);let history=[],rec=null;
+const defaults={endpoint:'https://api.openai.com/v1/chat/completions',model:'gpt-4o-mini',key:'',lang:'fil-PH',style:'warm',rate:'1'};
+function settings(){return {...defaults,...JSON.parse(localStorage.getItem('emoFaceSettings')||'{}')}}
+function load(){let s=settings();for(let k in s)if($(k))$(k).value=s[k]}
+function mood(m,t){$('face').className='face '+m;$('speech').textContent=t}
+function status(t){$('status').textContent='● '+t}
+let availableVoices=[];
+function refreshVoices(){if('speechSynthesis' in window) availableVoices=speechSynthesis.getVoices()||[]}
+if('speechSynthesis' in window){refreshVoices();speechSynthesis.onvoiceschanged=refreshVoices}
+function chooseVoice(lang){
+  refreshVoices();
+  if(!availableVoices.length)return null;
+  let base=lang.toLowerCase().split('-')[0];
+  return availableVoices.find(v=>v.lang.toLowerCase()===lang.toLowerCase())
+    || availableVoices.find(v=>v.lang.toLowerCase().startsWith(base))
+    || availableVoices.find(v=>v.default)
+    || availableVoices[0];
+}
+function say(t){
+  if(!('speechSynthesis' in window)){mood('sad','This browser has no built-in speech engine. Open EMO in Chrome and check Android text-to-speech settings.');return}
+  speechSynthesis.cancel();
+  let s=settings(),u=new SpeechSynthesisUtterance(t),voice=chooseVoice(s.lang);
+  u.lang=s.lang;
+  if(voice){u.voice=voice;u.lang=voice.lang}
+  u.rate=Number(s.rate)*(s.style==='calm'?.9:s.style==='cheerful'?1.07:1);
+  u.pitch=s.style==='cheerful'?1.18:s.style==='calm'?.92:s.style==='dramatic'?1.1:1.03;
+  u.volume=1;
+  u.onstart=()=>{status('SPEAKING');mood('talking',t)};
+  u.onend=()=>{status('READY');mood('happy','I’m listening. What shall we talk about next?')};
+  u.onerror=(e)=>{status('VOICE ERROR');mood('sad','Voice playback failed ('+e.error+'). Try Test voice or check your phone’s Text-to-speech settings.')};
+  // Queue after cancellation so Android speech engines have a moment to reset.
+  setTimeout(()=>{try{speechSynthesis.speak(u);if(speechSynthesis.paused)speechSynthesis.resume()}catch(e){status('VOICE ERROR');mood('sad','Could not start voice playback.')}},120);
+}
+async function ask(t){let s=settings();if(!s.key){mood('sad','Connect my AI brain in Settings first.');status('AI NOT CONNECTED');return}
+history.push({role:'user',content:t});mood('thinking','Hmm... let me think about that.');status('THINKING');
+try{let r=await fetch(s.endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+s.key},body:JSON.stringify({model:s.model,messages:[{role:'system',content:'You are EMO, a kind, knowledgeable, emotionally expressive AI companion. Respond naturally in the user’s language, including Filipino or Taglish. Be accurate, explain clearly, admit uncertainty, and use appropriate warmth. Do not claim to have human feelings.'},...history.slice(-20)],temperature:.75})});let d=await r.json();if(!r.ok)throw Error(d.error?.message||'HTTP '+r.status);let a=d.choices?.[0]?.message?.content;if(Array.isArray(a))a=a.map(x=>x.text||'').join('');if(!a)throw Error('Empty AI response');history.push({role:'assistant',content:a});status('ONLINE');say(a)}
+catch(e){history.pop();mood('sad','I can’t reach the AI service right now. Check the connection and settings.');status('ERROR')}}
+$('open').onclick=()=>$('overlay').classList.add('show');$('close').onclick=()=>$('overlay').classList.remove('show');
+$('save').onclick=()=>{let s={};['endpoint','model','key','lang','style','rate'].forEach(k=>s[k]=$(k).value.trim());localStorage.setItem('emoFaceSettings',JSON.stringify(s));$('overlay').classList.remove('show');status('SETTINGS SAVED')};
+$('testVoice').onclick=()=>{say('Hello! I am EMO. Can you hear my voice? Let us talk.');};
+$('stop').onclick=()=>{if('speechSynthesis' in window){speechSynthesis.cancel();speechSynthesis.resume()}mood('','I’m here.');status('READY')};
+$('mic').onclick=()=>{let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){mood('sad','Voice input is not supported here. Try Chrome or your keyboard microphone.');return}if(rec){rec.stop();rec=null;$('mic').classList.remove('active');return}rec=new SR();rec.lang=settings().lang;rec.interimResults=false;rec.onstart=()=>{$('mic').classList.add('active');mood('listening','I’m listening... speak now.');status('LISTENING')};rec.onresult=e=>ask(e.results[0][0].transcript);rec.onerror=e=>{mood('sad','Microphone issue: '+e.error);status('MIC ERROR')};rec.onend=()=>{$('mic').classList.remove('active');rec=null;if($('status').textContent.includes('LISTENING'))status('READY')};try{rec.start()}catch(e){mood('sad','Could not start microphone.')}};
+load();if(!localStorage.getItem('emoFaceSettings'))$('overlay').classList.add('show');
+if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});
+</script></body></html>
