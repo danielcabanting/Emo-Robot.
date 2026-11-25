@@ -1,1 +1,72 @@
 
+name: Build EMO Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Prepare EMO app
+        run: |
+          mkdir -p www
+          cp EMO_Face_Landscape_Voice_Fix.html www/index.html
+          cat > package.json <<'EOF'
+          {
+            "name": "emo-robot",
+            "version": "1.0.0",
+            "private": true,
+            "scripts": {
+              "build": "echo EMO ready"
+            },
+            "dependencies": {
+              "@capacitor/core": "6.2.1",
+              "@capacitor/android": "6.2.1"
+            },
+            "devDependencies": {
+              "@capacitor/cli": "6.2.1"
+            }
+          }
+          EOF
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.emorobot.app",
+            "appName": "EMO Robot",
+            "webDir": "www"
+          }
+          EOF
+          npm install
+          npx cap add android
+          npx cap sync android
+
+      - name: Build APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: EMO-Android-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          
